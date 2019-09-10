@@ -4,8 +4,8 @@
       <nav class="header">
         <a href="#" class="header__logo"></a>
         <div class="header__links">
-          <a href="#">Home</a>
-          <a href="#">Get in Touch</a>
+          <router-link to="/">Home</router-link>
+          <router-link to="/get_in_touch">Get in Touch</router-link>
         </div>
       </nav>
       <section class="about">

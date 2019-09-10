@@ -4,8 +4,8 @@
       <nav class="header">
         <a href="#" class="header__logo"></a>
         <div class="header__links">
-          <a href="#">Home</a>
-          <a href="#">About Us</a>
+          <router-link to="/">Home</router-link>
+          <router-link to="/about_us">About Us</router-link>
         </div>
       </nav>
       <section class="contact">
@@ -35,37 +35,65 @@
             <a href="#"></a>
           </div>
         </article>
-        <form method="post" class="contact-form">
-          <input
-            type="text"
-            v-bind:placeholder="placeholders.name"
-            v-model="name"
-            class="contact-form__input"
-            v-bind:class="{ error: wrongInput }"
-          />
-          <input
-            type="email"
-            v-bind:placeholder="placeholders.email"
-            v-model.trim="email"
-            class="contact-form__input"
-            v-bind:class="{ error: wrongInput }"
-          />
-          <input
-            type="text"
-            v-bind:placeholder="placeholders.company"
-            v-model="company"
-            class="contact-form__input"
-            v-bind:class="{ error: wrongInput }"
-          />
-          <textarea
-            v-bind:placeholder="placeholders.message"
-            cols="30"
-            rows="8"
-            v-model="message"
-            class="contact-form__input"
-            v-bind:class="{ error: wrongInput }"
-          ></textarea>
-          <button type="submit" @click="onSubmit">Submit</button>
+        <form method="post" class="contact-form" @submit.prevent="onSubmit">
+          <div class="contact-form__group">
+            <input
+              type="text"
+              placeholder="Your name"
+              v-model="name"
+              class="contact-form__input"
+              v-bind:class="{ error: $v.name.$error }"
+              @input="$v.name.$touch()"
+            />
+            <span
+              v-if="$v.name.$error"
+              class="contact-form__helper"
+            >Should be not less than 4 letters</span>
+          </div>
+          <div class="contact-form__group">
+            <input
+              type="email"
+              placeholder="Your email"
+              v-model.trim="email"
+              class="contact-form__input"
+              v-bind:class="{ error: $v.email.$error }"
+              @input="$v.email.$touch()"
+            />
+            <span
+              v-if="$v.email.$error"
+              class="contact-form__helper"
+            >Should be not less than 4 letters</span>
+          </div>
+          <div class="contact-form__group">
+            <input
+              type="text"
+              placeholder="Your company"
+              v-model="company"
+              class="contact-form__input"
+              v-bind:class="{ error: $v.company.$error }"
+              @input="$v.company.$touch()"
+            />
+            <span
+              v-if="$v.company.$error"
+              class="contact-form__helper"
+            >Should be not less than 4 letters</span>
+          </div>
+          <div class="contact-form__group">
+            <textarea
+              placeholder="Your message"
+              cols="30"
+              rows="8"
+              v-model="message"
+              class="contact-form__input"
+              v-bind:class="{ error: $v.message.$error }"
+              @input="$v.message.$touch()"
+            ></textarea>
+            <span
+              v-if="$v.message.$error"
+              class="contact-form__helper"
+            >Should be not less than 4 letters</span>
+          </div>
+          <button type="submit" :disabled="$v.$invalid" >Submit</button>
         </form>
       </section>
     </div>
@@ -73,56 +101,36 @@
 </template>
 
 <script>
+import { required, email, minLength } from "vuelidate/lib/validators";
+
 export default {
   data() {
     return {
       name: "",
       email: "",
       company: "",
-      message: "",
-      placeholders: {
-        name: "Your Name",
-        email: "Your Email",
-        company: "Your Company",
-        message: "Your Message"
-      },
-      wrongInput: false
+      message: ""
     };
   },
   methods: {
-    onSubmit(event) {
-      event.preventDefault();
-      if (this.name.length < 3) {
-        this.wrongInput = true;
-        this.placeholders.name = "Hmm.. seems this name is not valid ";
-      } else {
-        this.wrongInput = false;
-        this.placeholders.name;
-      }
-
-      if (!this.email.includes("@") || this.email.length < 8) {
-        this.wrongInput = true;
-        this.placeholders.email = "Wrong email... Try again";
-      } else {
-        this.wrongInput = false;
-        this.placeholders.email;
-      }
-
-      if (this.company.length < 5) {
-        this.wrongInput = true;
-        this.placeholders.company = "Hmm.. seems is invalid company name";
-      } else {
-        this.wrongInput = false;
-        this.placeholders.company;
-      }
-
-      if (this.message.length < 10) {
-        this.wrongInput = true;
-        this.placeholders.message = "Please write something about yourself";
-      } else {
-        this.wrongInput = false;
-        this.placeholders.message;
-      }
+    onSubmit() {}
+  },
+  validations: {
+    email: {
+      required,
+      email
+    },
+    name: {
+      required,
+      minLength: minLength(4)
+    },
+    company: {
+      required,
+      minLength: minLength(4)
+    },
+    message: {
+      required,
+      minLength: minLength(4)
     }
   }
 };
@@ -235,8 +243,13 @@ export default {
   max-width: 750px;
   width: 100%;
   background-color: #fff;
-  padding-top: 3em;
-  padding-left: 5em;
+  padding-top: 2em;
+  padding-left: 4em;
+}
+.contact-form__group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
 }
 .contact-form__input {
   max-width: 650px;
@@ -248,12 +261,11 @@ export default {
   padding: 1em 0 1em 0.3em;
   outline: none;
   font-family: "Roboto" sans-serif;
-  margin-bottom: 2em;
+  margin-bottom: 0.3em;
 }
 
 .error {
-  box-shadow: 0px 0px 5px 0px rgba(234, 61, 61, 0.6);
-  border-radius: 5px;
+  border-bottom: 2px solid yellow;
 }
 
 button[type="submit"] {
@@ -269,4 +281,18 @@ button[type="submit"] {
   margin-bottom: 4em;
   cursor: pointer;
 }
+button[type="submit"]:disabled {
+  background-color: #ccc;
+  border: 3px solid rgb(141, 138, 138);
+  color: #35373a;
+}
+.form__label {
+  color: black;
+}
+.contact-form__helper {
+  color: #e73d3d;
+  font-size: 0.65em;
+  font-weight: 600;
+}
+
 </style>

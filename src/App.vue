@@ -1,22 +1,14 @@
 <template>
   <div id="app" class="app">
-    <GetInTouch />
-
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line
-import MainPage from "./components/MainPage.vue";
-// eslint-disable-next-line
-import AboutUs from "./components/AboutUs.vue";
-// eslint-disable-next-line
-import GetInTouch from "./components/GetInTouch";
-
 export default {
   name: "app",
   components: {
-    GetInTouch
+    
   }
 };
 </script>

@@ -4,8 +4,8 @@
       <nav class="header">
         <a href="#" class="header__logo"></a>
         <div class="header__links">
-          <a href="#">About Us</a>
-          <a href="#">Get in Touch</a>
+          <router-link to="/about_us">About Us</router-link>
+          <router-link to="/get_in_touch">Get in Touch</router-link>
         </div>
       </nav>
       <main class="content">
@@ -35,15 +35,18 @@
             <span class="value_second">Second</span>
           </div>
         </div>
-        <form action class="mainForm">
+        <form action class="mainForm" @submit.prevent="onSubmit">
           <input
             type="email"
             class="mainForm__input"
-            v-bind:class="{ mainForm__input_error: wrongMail }"
+            v-bind:class="{ mainForm__input_error: $v.email.$error }"
             v-model.trim="email"
-            v-bind:placeholder="mainFormPlaceholder"
+            placeholder="Get notified by email..."
+            @input="$v.email.$touch()"
           />
-          <button type="submit" class="mainForm__send" @click="submitForm"></button>
+          
+          <button type="submit" class="mainForm__send" :disabled="$v.$invalid"></button>
+          <span v-if="$v.email.$error" class="mainForm__helper">Wrong email... Try again</span>
         </form>
       </main>
     </div>
@@ -51,25 +54,21 @@
 </template>
 
 <script>
+import { required, email } from "vuelidate/lib/validators";
 export default {
   data() {
     return {
-      email: "",
-      wrongMail: false,
-      mainFormPlaceholder: "Get notified by email..."
+      email: ""
     };
   },
-  methods: {
-    submitForm(event) {
-      event.preventDefault();
-      if (!this.email.includes("@") || this.email.length < 8) {
-        this.wrongMail = true;
-        this.mainFormPlaceholder = "Wrong email, try again...";
-      } else {
-        this.wrongMail = false;
-        this.mainFormPlaceholder = "Get notified by email...";
-      }
+  validations: {
+    email: {
+      required,
+      email
     }
+  },
+  methods: {
+    onSubmit() {}
   }
 };
 </script>
@@ -193,5 +192,9 @@ export default {
   cursor: pointer;
   background: url(../assets/mail.png) no-repeat center;
   background-size: contain;
+}
+.mainForm__helper {
+  font-size: 0.75em;
+  font-weight: 600;
 }
 </style>
