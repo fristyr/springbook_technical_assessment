@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuelidate from "vuelidate";
-import VueRouter from "vue-router"
+import VueRouter from "vue-router";
 import App from './App.vue'
 import AboutUs from "./components/AboutUs.vue"
 import GetInTouch from "./components/GetInTouch.vue"
@@ -8,6 +8,7 @@ import MainPage from "./components/MainPage.vue"
 
 Vue.use(VueRouter);
 Vue.use(Vuelidate);
+
 
 const routes = [
   { path:'/', component: MainPage },

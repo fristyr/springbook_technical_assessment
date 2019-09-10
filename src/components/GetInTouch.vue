@@ -29,10 +29,10 @@
             <b>Email:</b> contact@yourdomain.net
           </a>
           <div class="contact-info__socails">
-            <a href="#"></a>
-            <a href="#"></a>
-            <a href="#"></a>
-            <a href="#"></a>
+            <a href="https://www.facebook.com/" target="_blank"></a>
+            <a href="https://www.google.nl/" target="_blank"></a>
+            <a href="https://www.linkedin.com/" target="_blank"></a>
+            <a href="https://twitter.com/?lang=en" target="_blank"></a>
           </div>
         </article>
         <form method="post" class="contact-form" @submit.prevent="onSubmit">
@@ -102,7 +102,7 @@
 
 <script>
 import { required, email, minLength } from "vuelidate/lib/validators";
-
+import axios from "axios"
 export default {
   data() {
     return {
@@ -113,7 +113,18 @@ export default {
     };
   },
   methods: {
-    onSubmit() {}
+    onSubmit() {
+      axios.post('//jsonplaceholder.typicode.com/posts', {
+        name: this.name,
+        email: this.email,
+        company: this.company,
+        message: this.message,
+      }).then(response => {
+        this.response = JSON.stringify(response, null, 2)
+        
+      }).catch()
+    }
+    
   },
   validations: {
     email: {
@@ -143,7 +154,7 @@ export default {
     rgba(234, 61, 61, 0.9) 50%,
     rgba(53, 55, 58, 0.9) 50%
   );
-  height: 100vh;
+  min-height: 100vh;
 }
 .main {
   max-width: 1200px;
@@ -159,6 +170,7 @@ export default {
 }
 .header__logo {
   background: url(../assets/logo.png) no-repeat center center;
+  background-size: contain;
   width: 115px;
   height: 90px;
 }
@@ -293,6 +305,36 @@ button[type="submit"]:disabled {
   color: #e73d3d;
   font-size: 0.65em;
   font-weight: 600;
+}
+
+@media screen and (max-width: 1280px) {
+  .wrapper {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+  }
+  .header__links a:not(:last-child) {
+    margin-right: 2em;
+  }
+  .content__sqr_title {
+    font-size: 2em;
+  }
+  .header__logo {
+    width: 60px;
+    height: 55px;
+  }
+  .contact-form {
+    padding-left: 2em;
+  }
+  .contact-form__input {
+    max-width: 480px;
+    width: 90%;
+  }
+  .contact-info {
+    margin-right: 2.5em;
+  }
+  .contact-form[data-v-257e9514] {
+    max-width: 600px;
+  }
 }
 
 </style>

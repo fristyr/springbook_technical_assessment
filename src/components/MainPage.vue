@@ -17,25 +17,8 @@
             <b>COMING SOON</b>
           </p>
         </div>
-        <div class="content__time timeline">
-          <div class="timeline__block value">
-            <span class="value_first">120</span>
-            <span class="value_second">Days</span>
-          </div>
-          <div class="timeline__block">
-            <span class="value_first">21</span>
-            <span class="value_second">Hour</span>
-          </div>
-          <div class="timeline__block">
-            <span class="value_first">17</span>
-            <span class="value_second">Minutes</span>
-          </div>
-          <div class="timeline__block">
-            <span class="value_first">25</span>
-            <span class="value_second">Second</span>
-          </div>
-        </div>
-        <form action class="mainForm" @submit.prevent="onSubmit">
+        <deadline-timer></deadline-timer>
+        <form method="post" class="mainForm" @submit.prevent="onSubmit">
           <input
             type="email"
             class="mainForm__input"
@@ -44,7 +27,7 @@
             placeholder="Get notified by email..."
             @input="$v.email.$touch()"
           />
-          
+
           <button type="submit" class="mainForm__send" :disabled="$v.$invalid"></button>
           <span v-if="$v.email.$error" class="mainForm__helper">Wrong email... Try again</span>
         </form>
@@ -54,7 +37,9 @@
 </template>
 
 <script>
+import DeadlineTimer from "./DeadlineTimer.vue";
 import { required, email } from "vuelidate/lib/validators";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -68,7 +53,19 @@ export default {
     }
   },
   methods: {
-    onSubmit() {}
+    onSubmit() {
+      axios
+        .post("//jsonplaceholder.typicode.com/posts", {
+          email: this.email
+        })
+        .then(response => {
+          this.response = JSON.stringify(response, null, 2);
+        })
+        .catch();
+    }
+  },
+  components: {
+    "deadline-timer": DeadlineTimer
   }
 };
 </script>
@@ -76,7 +73,7 @@ export default {
 <style scoped>
 .wrapper {
   background-color: rgba(237, 62, 62, 0.9);
-  height: 100vh;
+  min-height: 100vh;
 }
 .main {
   max-width: 1200px;
@@ -92,6 +89,7 @@ export default {
 }
 .header__logo {
   background: url(../assets/logo.png) no-repeat center center;
+  background-size: contain;
   width: 115px;
   height: 90px;
 }
@@ -121,31 +119,7 @@ export default {
   width: 370px;
   height: 370px;
 }
-.timeline {
-  display: flex;
-  justify-content: space-between;
-  max-width: 550px;
-  margin: 0 auto;
-  margin-bottom: 2em;
-}
-.timeline__block {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  text-align: center;
-}
-.value_first {
-  font-weight: 200;
-  font-size: 2em;
-  color: #fff;
-  text-transform: uppercase;
-}
-.value_second {
-  font-weight: 500;
-  font-size: 1em;
-  color: #fff;
-  text-transform: uppercase;
-}
+
 .mainForm {
   display: flex;
   align-items: center;
@@ -196,5 +170,34 @@ export default {
 .mainForm__helper {
   font-size: 0.75em;
   font-weight: 600;
+}
+
+@media screen and (max-width: 1280px) {
+  .wrapper {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+  }
+  .content__sqr_title::before {
+    display: none;
+  }
+  .mainForm{
+    justify-content: center;
+  }
+  .mainForm__input{
+    max-width: 400px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .header__links a:not(:last-child) {
+    margin-right: 2em;
+  }
+  .content__sqr_title {
+    font-size: 2em;
+  }
+  .header__logo {
+    width: 60px;
+    height: 55px;
+  }
+  
 }
 </style>
